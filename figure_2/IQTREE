@@ -1,0 +1,13 @@
+#IQTREE - history of divergence among aurantiacus samples
+
+#Generate VCF with only unadmixed samples
+vcftools --vcf 'biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf' --keep iqtree_keep_admixture_scores_greater_than_0.99.csv --recode --out iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+
+#Create input for IQTREE
+python '/media/aidanwilliamshort/extradrive1/topology_weighting/genome_V1/variants_seperated_VCFs/clade_D_aridus_parviflorus/splitstree/vcf2phylip-2.7/vcf2phylip.py' -i 'iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf' -f -n -b --output-prefix iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+
+#Run IQTREE
+iqtree-1.6.12-Linux/bin/iqtree -s /home/ashort2/streisfeld/channel_islands_iqtree/vc_ug_postbqsr/version_1/iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.min4.phy -m MFP -bb 1000 -nt 56
+
+#use figtree to visualize IQTREE output
+java -jar '/media/aidanwilliamshort/extradrive2/FigTree_v1.4.4/lib/figtree.jar'
