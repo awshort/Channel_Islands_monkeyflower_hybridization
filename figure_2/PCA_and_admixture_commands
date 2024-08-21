@@ -1,0 +1,24 @@
+#zip VCF
+bgzip phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.vcf
+
+#index VCF for bcftools
+tabix -p vcf phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.vcf.gz
+
+#Filter to just 10 LGs
+bcftools view 'phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.vcf.gz' --regions LG1,LG2,LG3,LG4,LG5,LG6,LG7,LG8,LG9,LG10 -o LG_1_10.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.vcf
+
+#Filter for biallelic SNPs
+vcftools --vcf LG_1_10.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.vcf --min-alleles 2 --max-alleles 2 --recode --out biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+
+#copy VCF
+cp biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf no_chr.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf
+
+#Remove LG from chromosome names for admixture
+sed -i 's/LG//g' no_chr.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf
+
+#Generate eigenvec and eigenval file
+'/media/aidanwilliamshort/extradrive1/topology_weighting/genome_V1/variants_seperated_VCFs/clade_D_aridus_parviflorus/plink' --vcf no_chr.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --make-bed --pca --out no_chr.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands --allow-extra-chr --double-id --set-missing-var-ids @:#
+
+#Run admixture to K=11
+for K in 2 3 4 5 6 7 8 9 10 11; do '/media/aidanwilliamshort/barbatus1/SD_hybrid_zone/subset/no_PCT/admixture' --cv=20 'no_chr.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.bed' $K | tee log${K}.out; done
+
