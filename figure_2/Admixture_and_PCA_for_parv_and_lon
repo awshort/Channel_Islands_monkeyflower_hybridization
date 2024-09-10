@@ -1,0 +1,17 @@
+#Subset to just parv, lon, and cal and then filter for biallelic variants again
+vcftools --vcf '/media/aidanwilliamshort/barbatus1/version_1/biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf' --keep 'parv_lon_cal_keep.csv' --min-alleles 2 --max-alleles 2 --recode --out biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+#Generate PCA results
+'/media/aidanwilliamshort/extradrive1/topology_weighting/genome_V1/variants_seperated_VCFs/clade_D_aridus_parviflorus/plink' --vcf biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --make-bed --pca --out biallelic.parv_lon_cal --allow-extra-chr --double-id  --set-missing-var-ids @:#
+#Filter for missing data
+vcftools --vcf biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --max-missing 1 --recode --out no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+#Copy VCF
+cp no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf no_chr.no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf
+#remove "LG" from chromosome names for admixture
+sed -i 's/LG//g' no_chr.no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf
+# make bed
+'/media/aidanwilliamshort/extradrive1/topology_weighting/genome_V1/variants_seperated_VCFs/clade_D_aridus_parviflorus/plink' --vcf no_chr.no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --make-bed --out no_chr.no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands --allow-extra-chr --double-id --set-missing-var-ids @:#
+#generate PCA results
+'/media/aidanwilliamshort/extradrive1/topology_weighting/genome_V1/variants_seperated_VCFs/clade_D_aridus_parviflorus/plink' --vcf no_chr.no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --pca --out no_chr.no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands --allow-extra-chr --double-id --set-missing-var-ids @:#
+#Run admixture
+for K in 2 3; do '/media/aidanwilliamshort/barbatus1/SD_hybrid_zone/subset/no_PCT/admixture' --cv=20 'no_chr.no_missing.biallelic.parv_lon_cal.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.bed' $K | tee log${K}.out; done
+
