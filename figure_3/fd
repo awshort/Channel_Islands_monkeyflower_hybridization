@@ -1,0 +1,30 @@
+#generate geno file for Fd and Fst calculation
+#Export path to Simon Martin's Genomics General scripts
+export PYTHONPATH=$PYTHONPATH:'/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master'
+#activate conda environment with python 2
+source activate py2 
+#generate geno file from VCF
+python '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/VCF_processing/parseVCF.py' -i 'biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf' --skipIndels > biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno
+#calculate fd in 100kb genomic windows with a minimum of 100 sites - clade C/D taxon as P1, Island longiflorus as P2, parviflorus as P3
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -P1 longiflorus -P2 longiflorus_island -P3 parviflorus -O clevelandii --popsFile labels_2.csv -T 10 -o clipped.w_100000.m100.lon_lon_isl_parv_clev.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5 --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -P1 calycinus -P2 longiflorus_island -P3 parviflorus -O clevelandii --popsFile labels_2.csv -T 10 -o clipped.w_100000.m100.cal_lon_isl_par_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5 --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -P1 aurantiacus -P2 longiflorus_island -P3 parviflorus -O clevelandii --popsFile labels_2.csv -T 10 -o clipped.w_100000.m100.aur_lon_isl_par_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5 --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -P1 OC -P2 longiflorus_island -P3 parviflorus -O clevelandii --popsFile labels_2.csv -T 10 -o clipped.w_100000.m100.OC_lon_isl_par_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5 --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -P1 red -P2 longiflorus_island -P3 parviflorus -O clevelandii --popsFile labels_2.csv -T 10 -o clipped.w_100000.m100.red_lon_isl_par_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5 --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -P1 yellow -P2 longiflorus_island -P3 parviflorus -O clevelandii --popsFile labels_2.csv -T 10 -o clipped.w_100000.m100.yel_lon_isl_par_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5 --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+
+#calculate Fst in 100kb genomic windows with a minimum of 100 sites
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/popgenWindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -p aridus -p longiflorus -p longiflorus_island -p parviflorus -p calycinus --popsFile labels_2.csv -T 10 -o clipped.Fst.w_100000.m100.ari_lon_lon_isl_parv.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.csv --writeFailedWindow --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+
+#For loop to calculate fd in 100kb genomic windows with a minimum of 100 sites - aridus as P1, parviflorus as P2, clade C/D taxon as P3 
+export PYTHONPATH=$PYTHONPATH:'/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master'
+source activate py2 
+for i in longiflorus_island longiflorus calycinus OC red yellow aurantiacus grandiflorus
+do
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 100000 -m 100 -f phased -P1 aridus -P2 parviflorus -P3 "$i" -O clevelandii --popsFile labels_2.csv -T 10 -o clipped.w_100000.m100.ari_par_"$i"_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5 --windCoords 100kb_win_data_nonoverlap_plos_bio_coords.bed
+done
