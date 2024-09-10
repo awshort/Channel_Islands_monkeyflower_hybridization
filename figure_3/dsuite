@@ -1,0 +1,8 @@
+#run dtrios to perform abba-baba tests using all taxon
+'/media/aidanwilliamshort/extradrive2/extradrive2/Dsuite/Build/Dsuite' Dtrios "iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf" 'iqtree_keep_admixture_scores_greater_than_0.99_labels.csv' -t 'tree_2.newick' -o channel_islands_2
+#Generate fbranch results from abba-baba test results
+'/media/aidanwilliamshort/extradrive2/extradrive2/Dsuite/Build/Dsuite' Fbranch 'Fbranch.tree_2.newick' 'channel_islands_2_tree.txt' > Fbranch.channel_islands_2.txt
+#Activate conda environment
+conda activate dsuite
+#Generate fbranch plots
+python '/media/aidanwilliamshort/extradrive2/extradrive2/Dsuite/utils/dtools.py' 'Fbranch.channel_islands_2.txt' 'Fbranch.tree_2.newick' --outgroup Outgroup
