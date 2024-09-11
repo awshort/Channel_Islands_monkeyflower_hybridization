@@ -1,0 +1,15 @@
+#Calculate fd in 10kb windows with 1000bp steps
+#Export path to Simon Martin's genomics general scripts
+export PYTHONPATH=$PYTHONPATH:'/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master'
+#activate python2 conda environment
+source activate py2 
+#Calculate fd for aridus, parviflorus, and Island longiflorus
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 10000 -m 100 -s 1000 -f phased -P1 aridus -P2 parviflorus -P3 longiflorus_island -O clevelandii --popsFile labels_2.csv -T 10 -o 10kb_windows/clipped.w_10kb.m100.s1kb.ari_par_longiflorus_island_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5
+#Calculate fd for longiflorus, Island longiflorus, and parviflorus
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/ABBABABAwindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 10000 -m 100 -s 1000 -f phased -P1 longiflorus -P2 longiflorus_island -P3 parviflorus -O clevelandii --popsFile labels_2.csv -T 10 -o 10kb_windows/clipped.w_10kb.m100.s1kb.lon_lon_isl_par_cle.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.fd.csv --writeFailedWindow --minData 0.5
+#Calculate fst in 10kb windows with 1000bp steps
+python2.7 '/media/aidanwilliamshort/extradrive1/Spring_Rotation/genomics_general-master/popgenWindows.py' -g biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno -w 10000 -m 100 -s 1000 -f phased -p aridus -p longiflorus -p longiflorus_island -p parviflorus -p calycinus --popsFile labels_2.csv -T 10 -o 10kb_windows/Fst.w_10kb.m100.s1kb.ari_lon_lon_isl_parv.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.geno.csv --writeFailedWindow
+#Calculate pi and dxy using Katharine L. Korunes and Kieran Samuk's pixy
+pixy --stats dxy --vcf '/media/aidanwilliamshort/barbatus1/version_1/LG_1_10.all_confident_sites.postBQSR.v1.UnifiedGenotyper.channel_islands.vcf.gz' --populations '/media/aidanwilliamshort/barbatus1/version_1/labels_2.csv' --bed_file '/media/aidanwilliamshort/barbatus1/version_1/10kb_windows/w_10kb.m100.s1kb.coords.tsv' --n_cores 12 --output_prefix w_10kb.s_100
+pixy --stats pi --vcf '/media/aidanwilliamshort/barbatus1/version_1/LG_1_10.all_confident_sites.postBQSR.v1.UnifiedGenotyper.channel_islands.vcf.gz' --populations '/media/aidanwilliamshort/barbatus1/version_1/labels_2.csv' --bed_file '/media/aidanwilliamshort/barbatus1/version_1/10kb_windows/w_10kb.m100.s1kb.coords.tsv' --n_cores 8 --output_prefix w_10kb.s_100
+
