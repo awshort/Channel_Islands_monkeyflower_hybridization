@@ -1,2 +1,1 @@
-Directory containing Python script used to generate simulations with both recent and ancient gene flow with medium divergence (time to the root = 500,000 generations)
-And the results of this simulation
+Directory containing Python script used to generate simulations with both recent and ancient gene flow with medium divergence (time to the root = 500,000 generations) and the results of this simulation
