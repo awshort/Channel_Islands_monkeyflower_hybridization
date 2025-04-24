@@ -1,0 +1,14 @@
+# Subset VCF to just parv and lon samples, and then filter for biallelic variants again
+vcftools --vcf 'biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf' --keep 'parv_lon_keep.csv' --min-alleles 2 --max-alleles 2 --recode --out biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+#Generate bed file and perform principal component analysis 
+'plink' --vcf biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --make-bed --pca --out biallelic.parv_lon --allow-extra-chr --double-id  --set-missing-var-ids @:#
+#Filter for missing sites
+vcftools --vcf biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --max-missing 1 --recode --out no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+#Copy VCF
+cp no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf no_chr.no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf
+#Remove LG from chromosome names
+sed -i 's/LG//g' no_chr.no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf
+#Generate bed file for admixture
+'plink' --vcf no_chr.no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf --make-bed --out no_chr.no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands --allow-extra-chr --double-id --set-missing-var-ids @:#
+#Run admixture to K=3
+for K in 2 3; do 'admixture' --cv=20 'no_chr.no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.bed' $K | tee log${K}.out; done
