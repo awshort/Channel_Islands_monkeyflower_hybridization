@@ -1,0 +1,60 @@
+#R commands to plot PCA results
+
+```{r}
+# read in data
+library("readr")
+pca <- read_table2('no_chr.no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.eigenvec', col_names = FALSE)
+eigenval <- scan('no_chr.no_missing.biallelic.parv_lon.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.eigenval')
+```
+
+```{r}
+# sort out the pca data
+# remove nuisance column
+pca <- pca[,-1]
+# set names
+names(pca)[1] <- "ind"
+names(pca)[2:ncol(pca)] <- paste0("PC", 1:(ncol(pca)-1))
+```
+
+```{r}
+#read in list with samples names and taxonomic assignments
+sample<-read.table('pca_parv_lon_pop_labels.csv', header=TRUE)
+```
+
+```{r}
+#Merge PCA and sample names file 
+mergedPCA = cbind(pca, sample)
+mergedPCA$Population
+```
+
+```{r}
+#Calculate Percent variation explained by PCs
+pve <- data.frame(PC = 1:20, pve = eigenval/sum(eigenval)*100)
+```
+
+```{r}
+#Check cumulative sum of PCs
+cumsum(pve$pve)
+```
+```{r}
+#Plot PCA by taxa
+library(tidyverse)
+pdf("parv_lon_by_taxon.pca.pdf", height=7, width = 14, useDingbats = F)
+b <- ggplot(mergedPCA, aes(PC1, PC2, col = Taxon)) + geom_point(size = 5)
+b <- b + scale_colour_manual(values = c(
+"hotpink", #Green
+"mediumpurple", #Sky
+"purple4", #Orpiment
+"lightpink", #Forest
+"red", #Turquoise
+"goldenrod", #Lime
+"#F0A3FF", #Amethyst
+"#740AFF", #Violet
+"#426600", #Quagmire
+"#C20088", #Mallow
+"#94FFB5"))
+b <- b + theme_light()
+b + xlab(paste0("PC1 (", signif(pve$pve[1], 3), "%)")) + ylab(paste0("PC2 (", signif(pve$pve[2], 3), "%)"))
+dev.off()
+```
+
