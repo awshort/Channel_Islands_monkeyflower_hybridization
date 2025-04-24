@@ -1,0 +1,9 @@
+#Run IQTREE to create species tree that illustrates the history of divergence among aurantiacus samples
+#Exclude recent hybrids identified by admixture analysis
+vcftools --vcf 'biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf' --keep iqtree_keep_admixture_scores_greater_than_0.99.csv --recode --out iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+#Generate phylip file from VCF
+python 'vcf2phylip.py' -i 'iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.recode.vcf' -f -n -b --output-prefix iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands
+#Run IQTREE
+iqtree-1.6.12-Linux/bin/iqtree -s iqtree_keep_admixture_scores_greater_than_0.99.biallelic.phased.selected.filtered.postBQSR.v1.UnifiedGenotyper.channel_islands.min4.phy -m MFP -bb 1000 -nt 56 
+#Visualize iqtree using figtree
+java -jar '/media/aidanwilliamshort/extradrive2/FigTree_v1.4.4/lib/figtree.jar'
